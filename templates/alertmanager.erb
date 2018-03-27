@@ -1,0 +1,22 @@
+# The root route with all parameters, which are inherited by the child
+# routes if they are not overwritten.
+global:
+  slack_api_url: <%= node['prometheus']['alertmanager']['slack_api_url'] %>
+route:
+  receiver: 'slack-notifications'
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  group_by: [alertname]
+  # All alerts that do not match the following child routes
+  # will remain at the root node and be dispatched to 'default-receiver'.
+  routes:
+  # All alerts with service=mysql or service=cassandra
+  # are dispatched to the database pager.
+#   - receiver: 'slack-notifications'
+#     group_wait: 10s
+#
+receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+    - channel: '#alerts'

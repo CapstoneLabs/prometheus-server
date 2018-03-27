@@ -15,6 +15,7 @@ bin/*
 # test kitchen
 .kitchen/
 .kitchen.local.yml
+.delivery
 
 # Chef
 Berksfile.lock

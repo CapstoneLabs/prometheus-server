@@ -1,5 +1,5 @@
-#
-# Cookbook:: prometheus-server
-# Recipe:: default
-#
-# Copyright:: 2018, The Authors, All Rights Reserved.
+include_recipe "prometheus-server::alertmanager"
+include_recipe "prometheus-server::node_exporter"
+include_recipe "prometheus-server::prometheus"
+include_recipe "prometheus-server::security"
+include_recipe "prometheus-server::grafana"

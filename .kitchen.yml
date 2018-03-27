@@ -1,6 +1,8 @@
 ---
 driver:
   name: vagrant
+  network:
+    - ["private_network", {ip: "192.168.34.2"}]
 
 provisioner:
   name: chef_zero
@@ -14,13 +16,30 @@ verifier:
 
 platforms:
   - name: ubuntu-16.04
-  - name: centos-7
 
 suites:
   - name: default
+    data_bags_path: test/fixtures/default/data_bags
     run_list:
       - recipe[prometheus-server::default]
     verifier:
       inspec_tests:
         - test/smoke/default
     attributes:
+      chef-grafana:
+        config:
+          server:
+            domain: 192.168.34.2
+          auth.github:
+            client_id: <%= ENV['CLIENT_ID'] %>
+            client_secret: <%= ENV['CLIENT_SECRET'] %>
+          server:
+            http_addr: 192.168.34.2
+            http_port: 3000
+      prometheus:
+        alertmanager:
+          slack_api_url: <%= ENV['SLACK_API_URL'] %>
+        users:
+          - test_user
+      chef-vault:
+        databags_fallback: true
