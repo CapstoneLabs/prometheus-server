@@ -1,8 +1,6 @@
 ---
 driver:
   name: vagrant
-  network:
-    - ["private_network", {ip: "192.168.34.2"}]
 
 provisioner:
   name: chef_zero
@@ -16,6 +14,31 @@ verifier:
 
 platforms:
   - name: ubuntu-16.04
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.34.2"}]
+    attributes:
+      chef-grafana:
+        install:
+          version: 5.0.3
+        config:
+          server:
+            domain: 192.168.34.2
+            http_addr: 192.168.34.2
+            http_port: 3000
+  - name: centos-7.3
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.34.3"}]
+    attributes:
+      chef-grafana:
+        install:
+          version: 5.0.3-1
+        config:
+          server:
+            domain: 192.168.34.3
+            http_addr: 192.168.34.3
+            http_port: 3000
 
 suites:
   - name: default
@@ -28,14 +51,9 @@ suites:
     attributes:
       chef-grafana:
         config:
-          server:
-            domain: 192.168.34.2
           auth.github:
             client_id: <%= ENV['CLIENT_ID'] %>
             client_secret: <%= ENV['CLIENT_SECRET'] %>
-          server:
-            http_addr: 192.168.34.2
-            http_port: 3000
       prometheus:
         alertmanager:
           slack_api_url: <%= ENV['SLACK_API_URL'] %>
