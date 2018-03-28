@@ -2,12 +2,23 @@
 # Cookbook:: prometheus-server
 # Recipe:: add_security
 #
-# Copyright:: 2018, The Authors, All Rights Reserved.
+# Copyright:: 2018, Capstone Metering LLC, Apache License 2.0.
 
-apt_update 'update'
+case node['platform']
+  when "debian", "ubuntu"
+    apt_update 'update'
 
-package 'nginx'
-package 'apache2-utils'
+    package 'nginx'
+    package 'apache2-utils'
+  when "redhat", "centos", "amazon", "scientific"
+    package 'epel-release'
+    package 'nginx'
+    package 'httpd-tools'
+end
+
+directory '/etc/nginx/sites-available'
+
+directory '/etc/nginx/sites-enabled'
 
 # for some reason this is needed
 include_recipe 'htpasswd::default'
@@ -44,5 +55,5 @@ ruby_block "ln -s /etc/nginx/sites-available/prometheus /etc/nginx/sites-enabled
 end
 
 service 'nginx' do
-  action :reload
+  action [:enable, :start, :reload]
 end

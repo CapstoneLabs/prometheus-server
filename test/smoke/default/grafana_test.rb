@@ -5,6 +5,10 @@
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
+describe package('grafana') do
+  it { should be_installed }
+end
+
 describe service('grafana-server') do
   it { should be_enabled }
   it { should be_running }
