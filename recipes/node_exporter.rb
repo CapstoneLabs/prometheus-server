@@ -39,6 +39,7 @@ end
 file '/usr/local/bin/node_exporter' do
   owner 'node_exporter'
   group 'node_exporter'
+  notifies :restart, "service[node_exporter]"
 end
 
 # create systemd unit file node_exporter.service
@@ -53,16 +54,19 @@ systemd_unit 'node_exporter.service' do
   User=node_exporter
   Group=node_exporter
   Type=simple
-  ExecStart=/usr/local/bin/node_exporter
+  ExecStart=/usr/local/bin/node_exporter \
+    --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc|var/lib/docker/containers|var/lib/docker/overlay2|run/docker/netns.*)($$|/)"
 
   [Install]
   WantedBy=multi-user.target
   EOU
 
   action [:create, :enable]
+  notifies :restart, "service[node_exporter]"
 end
 
 # re/start node_exporter
 service 'node_exporter' do
-  action [:start, :restart]
+  restart_command "systemctl restart node_exporter"
+  action :nothing
 end
