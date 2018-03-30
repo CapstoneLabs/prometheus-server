@@ -2,7 +2,7 @@
 # Cookbook:: prometheus-server
 # Recipe:: alertsmanager
 #
-# Copyright:: 2018, The Authors, All Rights Reserved.
+# Copyright:: 2018, Capstone Metering LLC, Apache License 2.0.
 
 # create system user
 user 'alertmanager' do
@@ -79,8 +79,8 @@ systemd_unit 'alertmanager.service' do
   Group=alertmanager
   Type=simple
   ExecStart=/usr/local/bin/alertmanager \
-      --config.file /etc/alertmanager/alertmanager.yml \
-      --storage.path="/var/lib/alertmanager/data/"
+      --config.file "/etc/alertmanager/alertmanager.yml" \
+      --storage.path "/var/lib/alertmanager/data/"
 
   [Install]
   WantedBy=multi-user.target

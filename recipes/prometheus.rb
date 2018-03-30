@@ -2,7 +2,7 @@
 # Cookbook:: prometheus-server
 # Recipe:: default
 #
-# Copyright:: 2018, The Authors, All Rights Reserved.
+# Copyright:: 2018, Capstone Metering LLC, Apache License 2.0.
 
 # create system user
 user 'prometheus' do

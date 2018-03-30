@@ -1,16 +1,32 @@
 # # encoding: utf-8
 
-# Inspec test for recipe prometheus-server::add_security
+# Inspec test for recipe prometheus-server::security
 
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-describe package('nginx') do
-  it { should be_installed }
-end
 
-describe package('apache2-utils') do
-  it { should be_installed }
+if os.family == 'debian'
+
+    describe package('nginx') do
+      it { should be_installed }
+    end
+
+    describe package('apache2-utils') do
+      it { should be_installed }
+    end
+elsif os.family == 'redhat'
+    describe package('epel-release') do
+      it { should be_installed }
+    end
+
+    describe package('nginx') do
+      it { should be_installed }
+    end
+
+    describe package('httpd-tools') do
+      it { should be_installed }
+    end
 end
 
 describe file('/etc/nginx/sites-available/prometheus') do

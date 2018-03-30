@@ -2,7 +2,7 @@
 # Cookbook:: prometheus-server
 # Recipe:: node_exporter
 #
-# Copyright:: 2018, The Authors, All Rights Reserved.
+# Copyright:: 2018, Capstone Metering LLC, Apache License 2.0.
 
 # create system user
 user 'node_exporter' do
