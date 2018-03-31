@@ -27,3 +27,6 @@ default['prometheus']['users'] = ['']
 default['chef-grafana']['config']['auth.anonymous']['enabled'] = false
 default['chef-grafana']['config']['auth.github']['scopes'] = 'user:email,read:org'
 default['chef-grafana']['install']['version'] = '5.0.3'
+
+# alertmanager
+default['prometheus']['alertmanager']['slack_api_url'] = nil

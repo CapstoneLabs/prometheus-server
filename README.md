@@ -1,10 +1,10 @@
 # prometheus-server
 
-We found there's no working Prometheus cookbooks out there so we wrote our own.
+We found there's no working Prometheus cookbooks out there so we wrote our own. You will need to write your own prometheus.yml.
 
 ### Testing
 
-Currently only tested on Ubuntu 16.04
+Tested on Ubuntu 16.04 and CentOS 7.3+
 
 ### Attributes
 

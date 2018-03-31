@@ -4,7 +4,7 @@ maintainer_email 'matt.ouille@capstonemetering.com'
 license 'Apache 2.0'
 description 'Installs/Configures prometheus-server'
 long_description 'Installs/Configures prometheus-server'
-version '0.1.5'
+version '0.1.6'
 chef_version '>= 12.1' if respond_to?(:chef_version)
 
 depends 'chef-vault', '~> 3.0.0'

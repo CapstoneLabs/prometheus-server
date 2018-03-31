@@ -15,6 +15,7 @@ end
 directory '/etc/prometheus' do
   owner 'prometheus'
   group 'prometheus'
+  recursive true
   mode '0755'
   action :create
 end
@@ -22,6 +23,15 @@ end
 directory '/var/lib/prometheus' do
   owner 'prometheus'
   group 'prometheus'
+  recursive true
+  mode '0755'
+  action :create
+end
+
+directory '/var/lib/prometheus/discovery' do
+  owner 'prometheus'
+  group 'prometheus'
+  recursive true
   mode '0755'
   action :create
 end
@@ -71,21 +81,17 @@ file '/usr/local/bin/promtool' do
   group 'prometheus'
 end
 
-# copy directories
-ruby_block "cp /tmp/#{node['prometheus']['folders']['prometheus']}/consoles /etc/prometheus/consoles" do
+# copy directory
+ruby_block "cp /tmp/#{node['prometheus']['folders']['prometheus']}/consoles /etc/prometheus" do
   not_if { ::File.exist?('/etc/prometheus/consoles') }
   block do
     require 'fileutils'
-    FileUtils.cp_r "/tmp/#{node['prometheus']['folders']['prometheus']}/consoles", '/etc/prometheus'
+    FileUtils.cp_r "/tmp/#{node['prometheus']['folders']['prometheus']}/consoles", '/etc/prometheus/'
   end
 end
 
-directory '/etc/prometheus/consoles' do
-  owner 'prometheus'
-  group 'prometheus'
-end
-
-ruby_block "cp /tmp/#{node['prometheus']['folders']['prometheus']}/console_libraries /etc/prometheus/console_libraries" do
+# copy directory
+ruby_block "cp /tmp/#{node['prometheus']['folders']['prometheus']}/console_libraries /etc/prometheus/" do
   not_if { ::File.exist?('/etc/prometheus/console_libraries') }
   block do
     require 'fileutils'
@@ -93,9 +99,16 @@ ruby_block "cp /tmp/#{node['prometheus']['folders']['prometheus']}/console_libra
   end
 end
 
+directory '/etc/prometheus/consoles' do
+  owner 'prometheus'
+  group 'prometheus'
+  recursive true
+end
+
 directory '/etc/prometheus/console_libraries' do
   owner 'prometheus'
   group 'prometheus'
+  recursive true
 end
 # end prometheus copy
 
@@ -104,6 +117,7 @@ cookbook_file '/etc/prometheus/prometheus.yml' do
   source 'prometheus.yml'
   owner 'prometheus'
   group 'prometheus'
+  notifies :restart, "service[prometheus]"
 end
 
 # create systemd unit file prometheus.service
@@ -119,19 +133,23 @@ systemd_unit 'prometheus.service' do
   Group=prometheus
   Type=simple
   ExecStart=/usr/local/bin/prometheus \
-      --config.file /etc/prometheus/prometheus.yml \
-      --storage.tsdb.path /var/lib/prometheus/ \
-      --web.console.templates=/etc/prometheus/consoles \
-      --web.console.libraries=/etc/prometheus/console_libraries
+  --log.level=debug \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus/ \
+  --storage.tsdb.retention=15d \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries
 
   [Install]
   WantedBy=multi-user.target
   EOU
 
   action [:create, :enable]
+  notifies :restart, "service[prometheus]"
 end
 
 # re/start prometheus
 service 'prometheus' do
-  action [:start, :restart]
+  restart_command "systemctl restart prometheus"
+  action :nothing
 end

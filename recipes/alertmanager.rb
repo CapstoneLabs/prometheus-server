@@ -63,6 +63,7 @@ template '/etc/alertmanager/alertmanager.yml' do
   source 'alertmanager.erb'
   owner 'alertmanager'
   group 'alertmanager'
+  notifies :restart, "service[alertmanager]"
 end
 
 # create systemd unit file alertmanager.service
@@ -86,9 +87,11 @@ systemd_unit 'alertmanager.service' do
   EOU
 
   action [:create, :enable]
+  notifies :restart, "service[alertmanager]"
 end
 
 # re/start alertmanager
 service 'alertmanager' do
-  action [:start, :restart]
+  restart_command "systemctl restart alertmanager"
+  action :nothing
 end

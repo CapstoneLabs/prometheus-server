@@ -30,8 +30,3 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['localhost:9100']
-  - job_name: 'rabbitmq_prod'
-    scrape_interval: 5s
-    metrics_path: '/api/metrics'
-    static_configs:
-      - targets: ['54.80.137.65:15672']
